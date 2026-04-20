@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Portfolio">
+<meta name="theme-color" content="#080d1a">
+<title>Avanza Portfolio</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>ð</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root {
+  --bg: #080d1a;
+  --card: #0f1320;
+  --card2: #131829;
+  --border: #1c2236;
+  --text: #e8e4d0;
+  --dim: #5a6080;
+  --green: #00ff9f;
+  --red: #ff4d6d;
+  --blue: #60cfff;
+  --purple: #a78bfa;
+  --orange: #f0c040;
+  --gold: #ffd700;
+  --crypto: #f59e0b;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Mono', monospace;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding-top: var(--safe-top);
+  padding-bottom: calc(60px + var(--safe-bottom));
+  overflow-x: hidden;
+}
+/* HEADER */
+.header {
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid var(--border);
+}
+.header-sub { font-size: 9px; color: var(--blue); letter-spacing: 3px; opacity: 0.7; }
+.header-title { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; letter-spacing: -0.5px; margin-top: 2px; }
+.header-row { display: flex; justify-content: space-between; align-items: flex-end; }
+.live-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: blink 2s infinite; margin-right: 6px; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+.live-text { font-size: 9px; color: var(--green); letter-spacing: 2px; }
+
+/* HERO KPIs */
+.hero {
+  padding: 20px;
+  text-align: center;
+  background: linear-gradient(180deg, rgba(96,207,255,0.04) 0%, transparent 100%);
+}
+.hero-value { font-family: 'Syne', sans-serif; font-size: 38px; font-weight: 800; letter-spacing: -1px; }
+.hero-label { font-size: 9px; letter-spacing: 3px; color: var(--dim); margin-bottom: 4px; }
+.hero-sub { font-size: 12px; color: var(--dim); margin-top: 4px; }
+.hero-sub strong { color: var(--green); }
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+  margin-top: 16px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.kpi {
+  background: var(--card);
+  padding: 14px 8px;
+  text-align: center;
+}
+.kpi-label { font-size: 8px; letter-spacing: 2px; color: var(--dim); margin-bottom: 4px; }
+.kpi-value { font-size: 16px; font-weight: 700; font-family: 'Syne', sans-serif; }
+.kpi-sub { font-size: 9px; color: var(--dim); margin-top: 2px; }
+
+/* TABS */
+.tabs {
+  position: fixed;
+  bottom: 0;
+  left: 0; right: 0;
+  background: var(--card);
+  border-top: 1px solid var(--border);
+  display: flex;
+  padding-bottom: var(--safe-bottom);
+  z-index: 100;
+}
+.tab {
+  flex: 1;
+  padding: 10px 4px 8px;
+  text-align: center;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: var(--dim);
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1px;
+  transition: color 0.2s;
+}
+.tab.active { color: var(--blue); }
+.tab-icon { font-size: 18px; display: block; margin-bottom: 2px; }
+
+/* PAGE */
+.page { display: none; padding: 16px 16px 24px; }
+.page.active { display: block; }
+
+/* CARDS */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+.card-title {
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: var(--blue);
+  margin-bottom: 12px;
+}
+
+/* HOLDING ROW */
+.h-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(28,34,54,0.7);
+}
+.h-row:last-child { border-bottom: none; }
+.h-name { font-size: 13px; font-weight: 500; }
+.h-type {
+  display: inline-block;
+  font-size: 8px;
+  letter-spacing: 1px;
+  padding: 1px 6px;
+  border-radius: 3px;
+  margin-left: 6px;
+}
+.h-right { text-align: right; flex-shrink: 0; margin-left: 12px; }
+.h-val { font-size: 14px; font-weight: 600; }
+.h-gain { font-size: 11px; }
+.h-thesis { font-size: 10px; color: var(--dim); margin-top: 2px; max-width: 200px; }
+
+/* ALERT CARDS */
+.alert-card {
+  background: var(--card2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 8px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.alert-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+.alert-text { font-size: 12px; line-height: 1.6; }
+
+/* WATCHLIST */
+.w-card {
+  background: var(--card2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 8px;
+}
+.w-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.w-name { font-size: 14px; font-weight: 600; }
+.w-ticker { font-size: 11px; color: var(--dim); margin-left: 6px; }
+.w-signal {
+  font-size: 9px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 5px;
+  letter-spacing: 1px;
+}
+.signal-buy { background: rgba(0,255,159,0.12); color: var(--green); border: 1px solid rgba(0,255,159,0.3); }
+.signal-watch { background: rgba(96,207,255,0.12); color: var(--blue); border: 1px solid rgba(96,207,255,0.3); }
+.w-reason { font-size: 11px; color: var(--dim); line-height: 1.6; }
+.w-footer { display: flex; justify-content: space-between; margin-top: 8px; font-size: 10px; }
+.w-entry { color: var(--green); }
+.w-price { color: var(--dim); }
+.w-catalyst { font-size: 10px; color: var(--orange); margin-top: 4px; }
+.new-tag { color: var(--orange); font-size: 9px; font-weight: 700; margin-left: 6px; }
+
+/* CHART */
+.chart-box { position: relative; height: 200px; margin-top: 8px; }
+
+/* REBAL BAR */
+.rebal-row { margin-bottom: 14px; }
+.rebal-header { display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 11px; }
+.rebal-bar { height: 8px; background: rgba(255,255,255,0.06); border-radius: 4px; position: relative; overflow: visible; }
+.rebal-fill { height: 100%; border-radius: 4px; transition: width 0.6s; }
+.rebal-target-line {
+  position: absolute;
+  top: -3px;
+  height: 14px;
+  width: 2px;
+  border-radius: 1px;
+  background: rgba(255,255,255,0.5);
+}
+.rebal-label { display: flex; justify-content: space-between; font-size: 9px; color: var(--dim); margin-top: 3px; }
+
+/* STATUS */
+.status-badge {
+  display: inline-block;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  letter-spacing: 1px;
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 0; }
+
+/* PULL TO REFRESH HINT */
+.refresh-hint {
+  text-align: center;
+  padding: 10px;
+  font-size: 9px;
+  color: var(--dim);
+  letter-spacing: 2px;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-row">
+    <div>
+      <div class="header-sub">AVANZA ISK Â· 7517754</div>
+      <div class="header-title">PORTFOLIO</div>
+    </div>
+    <div>
+      <span class="live-dot"></span>
+      <span class="live-text">APR 20 @ 20:50</span>
+    </div>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="hero-label">TOTAL VALUE</div>
+  <div class="hero-value">318,498 <span style="font-size:16px;color:var(--dim)">SEK</span></div>
+  <div class="hero-sub"><strong>+17,310</strong> (+5.91%) Â· 1Y: <strong>+80,110</strong></div>
+  <div class="kpi-row">
+    <div class="kpi">
+      <div class="kpi-label">DAY Î</div>
+      <div class="kpi-value" style="color:var(--green)">+11,429</div>
+      <div class="kpi-sub">+3.7% vs Apr 17</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">CASH</div>
+      <div class="kpi-value">8,357</div>
+      <div class="kpi-sub">SEK</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">HOLDINGS</div>
+      <div class="kpi-value">12</div>
+      <div class="kpi-sub">+ 12 watch</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PAGE: HOLDINGS ===== -->
+<div class="page active" id="page-holdings">
+  <div class="card">
+    <div class="card-title">CERTIFICATES</div>
+    <div class="h-row">
+      <div>
+        <div class="h-name">Bitcoin (XBT) <span class="h-type" style="background:rgba(245,158,11,0.15);color:var(--crypto)">CRYPTO</span></div>
+        <div class="h-thesis">$75.3K Â· 17 units Â· Holding through vol</div>
+      </div>
+      <div class="h-right">
+        <div class="h-val">51,483</div>
+        <div class="h-gain" style="color:var(--green)">+2,186 (+4.4%)</div>
+      </div>
+    </div>
+    <div class="h-row">
+      <div>
+        <div class="h-name">GULD AVA A <span class="h-type" style="background:rgba(255,215,0,0.15);color:var(--gold)">GOLD</span> <span class="status-badge" style="background:rgba(0,255,159,0.12);color:var(--green)">BUY</span></div>
+        <div class="h-thesis">130 units Â· Added 30 Â· Target 15%</div>
+      </div>
+      <div class="h-right">
+        <div class="h-val">28,906</div>
+        <div class="h-gain" style="color:var(--green)">+341 (+1.2%)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">STOCKS</div>
+    <div class="h-row">
+      <div>
+        <div class="h-name">NVIDIA <span class="h-type" style="background:rgba(96,207,255,0.12);color:var(--blue)">NVDA</span></div>
+        <div class="h-thesis">$200.67 Â· 18 shares Â· AI supercycle</div>
+      </div>
+      <div class="h-right">
+        <div class="h-val">32,970</div>
+        <div class="h-gain" style="color:var(--green)">+2,258 (+7.4%)</div>
+      </div>
+    </div>
+    <div class="h-row">
+      <div>
+        <div class="h-name">Ionis Pharma <span class="h-type" style="background:rgba(96,207,255,0.12);color:var(--blue)">IONS</span></div>
+        <div class="h-thesis">$75.22 Â· 40 shares Â· RNA leader</div>
+      </div>
+      <div class="h-right">
+        <div class="h-val">27,463</div>
+        <div class="h-gain" style="color:var(--green)">+4,182 (+18.0%)</div>
+      </div>
+    </div>
+    <div class="h-row">
+      <div>
+        <div class="h-name">Eli Lilly <span class="h-type" style="background:rgba(96,207,255,0.12);color:var(--blue)">LLY</span></div>
+        <div class="h-thesis">$926.92 Â· 2 shares Â· GLP-1 leader</div>
+      </div>
+      <div class="h-right">
+        <div class="h-val">16,921</div>
+        <div class="h-gain" style="color:var(--green)">+1,488 (+9.6%)</div>
+      </div>
+    </div>
+    <div class="h-row">
+      <div>
+        <div class="h-name">Revolution Med <span class="h-type" style="background:rgba(96,207,255,0.12);color:var(--blue)">RVMD</span> <span class="new-tag">â NEW</span></div>
+        <div class="h-thesis">$148.90 Â· 6 shares Â· Phase 3 OS doubled</div>
+      </div>
+      <div class="h-right">
+        <div class="h-val">8,155</div>
+        <div class="h-gain" style="color:var(--red)">-16 (-0.2%)</div>
+      </div>
+    </div>
+    <div class="h-row">
+      <div>
+        <div class="h-name">Rolls-Royce <span class="h-type" style="background:rgba(96,207,255,0.12);color:var(--blue)">RR</span> <span class="status-badge" style="background:rgba(96,207,255,0.12);color:var(--blue)">WATCH</span></div>
+        <div class="h-thesis">1,262p Â· 50 shares Â· Iran headwind</div>
+      </div>
+      <div class="h-right">
+        <div class="h-val">7,800</div>
+        <div class="h-gain" style="color:var(--red)">-336 (-4.1%)</div>
+      </div>
+    </div>
+    <div class="h-row">
+      <div>
+        <div class="h-name">Ascendis Pharma <span class="h-type" style="background:rgba(96,207,255,0.12);color:var(--blue)">ASND</span></div>
+        <div class="h-thesis">$246.62 Â· 3 shares Â· Top gain %</div>
+      </div>
+      <div class="h-right">
+        <div class="h-val">6,753</div>
+        <div class="h-gain" style="color:var(--green)">+1,217 (+22.0%)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">FUNDS</div>
+    <div class="h-row">
+      <div><div class="h-name">Avanza Tech</div><div class="h-thesis">Tech/AI sector</div></div>
+      <div class="h-right"><div class="h-val">43,033</div><div class="h-gain" style="color:var(--green)">+2,491 (+6.1%)</div></div>
+    </div>
+    <div class="h-row">
+      <div><div class="h-name">Avanza Global</div><div class="h-thesis">Broad diversification</div></div>
+      <div class="h-right"><div class="h-val">41,018</div><div class="h-gain" style="color:var(--green)">+533 (+1.3%)</div></div>
+    </div>
+    <div class="h-row">
+      <div><div class="h-name">SEB AI Fund</div><div class="h-thesis">AI theme</div></div>
+      <div class="h-right"><div class="h-val">27,321</div><div class="h-gain" style="color:var(--green)">+890 (+3.4%)</div></div>
+    </div>
+    <div class="h-row">
+      <div><div class="h-name">Finserve Security</div><div class="h-thesis">Cyber/defense</div></div>
+      <div class="h-right"><div class="h-val">18,312</div><div class="h-gain" style="color:var(--green)">+2,076 (+12.8%)</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PAGE: CHARTS ===== -->
+<div class="page" id="page-charts">
+  <div class="card">
+    <div class="card-title">PORTFOLIO VALUE OVER TIME</div>
+    <div class="chart-box"><canvas id="timeChart"></canvas></div>
+  </div>
+  <div class="card">
+    <div class="card-title">DISTRIBUTION</div>
+    <div class="chart-box"><canvas id="distChart"></canvas></div>
+  </div>
+  <div class="card">
+    <div class="card-title">GAIN % RANKED</div>
+    <div class="chart-box" style="height:280px"><canvas id="perfChart"></canvas></div>
+  </div>
+  <div class="card">
+    <div class="card-title">DIVIDENDS (SEK)</div>
+    <div class="chart-box"><canvas id="divChart"></canvas></div>
+  </div>
+</div>
+
+<!-- ===== PAGE: ALERTS ===== -->
+<div class="page" id="page-alerts">
+  <div class="card-title" style="padding:0 4px 8px">TODAY'S ALERTS</div>
+  <div class="alert-card">
+    <div class="alert-icon">ð</div>
+    <div class="alert-text"><strong>NEW POSITION</strong><br>Revolution Medicines (RVMD) â 6 shares @ $148.90. Phase 3 OS doubled. Targets $147-175.</div>
+  </div>
+  <div class="alert-card">
+    <div class="alert-icon">â¬ï¸</div>
+    <div class="alert-text"><strong>ADDED UNITS</strong><br>GULD AVA A 100 â 130 units. Rebalancing toward 15% gold allocation target.</div>
+  </div>
+  <div class="alert-card">
+    <div class="alert-icon">ð</div>
+    <div class="alert-text"><strong>1Y MILESTONE</strong><br>1-year gain crossed <strong style="color:var(--green)">+80,110 SEK</strong> â up from 61,246 last update.</div>
+  </div>
+  <div class="alert-card">
+    <div class="alert-icon">â ï¸</div>
+    <div class="alert-text"><strong>REBALANCE NEEDED</strong><br>Funds overweight at 40.7% vs 25% target. Trim ~50K to fund gold/stocks/crypto.</div>
+  </div>
+  <div class="alert-card">
+    <div class="alert-icon">ð</div>
+    <div class="alert-text"><strong>PORTFOLIO UP</strong><br>+11,429 SEK (+3.7%) since Apr 17. New positions + fund recovery driving gains.</div>
+  </div>
+
+  <div class="card-title" style="padding:16px 4px 8px">REBALANCING</div>
+  <div class="card">
+    <div class="rebal-row">
+      <div class="rebal-header"><span style="color:var(--blue)">Stocks</span><span>31.4% â 35%</span></div>
+      <div class="rebal-bar"><div class="rebal-fill" style="width:62.8%;background:var(--blue)"></div><div class="rebal-target-line" style="left:70%"></div></div>
+      <div class="rebal-label"><span style="color:var(--orange)">ADD ~11K</span><span>target</span></div>
+    </div>
+    <div class="rebal-row">
+      <div class="rebal-header"><span style="color:var(--purple)">Funds</span><span>40.7% â 25%</span></div>
+      <div class="rebal-bar"><div class="rebal-fill" style="width:81.4%;background:var(--purple)"></div><div class="rebal-target-line" style="left:50%"></div></div>
+      <div class="rebal-label"><span style="color:var(--red)">REDUCE ~50K</span><span>target</span></div>
+    </div>
+    <div class="rebal-row">
+      <div class="rebal-header"><span style="color:var(--crypto)">Crypto</span><span>16.2% â 20%</span></div>
+      <div class="rebal-bar"><div class="rebal-fill" style="width:32.4%;background:var(--crypto)"></div><div class="rebal-target-line" style="left:40%"></div></div>
+      <div class="rebal-label"><span style="color:var(--orange)">ADD ~12K</span><span>target</span></div>
+    </div>
+    <div class="rebal-row">
+      <div class="rebal-header"><span style="color:var(--gold)">Gold</span><span>9.1% â 15%</span></div>
+      <div class="rebal-bar"><div class="rebal-fill" style="width:18.2%;background:var(--gold)"></div><div class="rebal-target-line" style="left:30%"></div></div>
+      <div class="rebal-label"><span style="color:var(--orange)">ADD ~19K</span><span>target</span></div>
+    </div>
+    <div class="rebal-row">
+      <div class="rebal-header"><span style="color:var(--dim)">Cash</span><span>2.6% â 5%</span></div>
+      <div class="rebal-bar"><div class="rebal-fill" style="width:5.2%;background:#888"></div><div class="rebal-target-line" style="left:10%"></div></div>
+      <div class="rebal-label"><span style="color:var(--orange)">ADD ~8K</span><span>target</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PAGE: WATCHLIST ===== -->
+<div class="page" id="page-watchlist">
+  <div class="card-title" style="padding:0 4px 8px">CATALYST WATCHLIST (12)</div>
+
+  <div class="w-card">
+    <div class="w-header">
+      <div><span class="w-name">Vera Therapeutics</span><span class="w-ticker">VERA</span><span class="new-tag">â NEW</span></div>
+      <span class="w-signal signal-buy">BUY</span>
+    </div>
+    <div class="w-reason">PDUFA July 7 for atacicept (IgAN). Priority Review. 10 analysts Buy, PT $82 (+88%)</div>
+    <div class="w-catalyst">ð PDUFA July 7 â 78 days</div>
+    <div class="w-footer"><span class="w-entry">Entry: $40</span><span class="w-price">Now: $43.85</span></div>
+  </div>
+
+  <div class="w-card">
+    <div class="w-header">
+      <div><span class="w-name">Novo Nordisk</span><span class="w-ticker">NOVO B</span></div>
+      <span class="w-signal signal-buy">BUY</span>
+    </div>
+    <div class="w-reason">GLP-1 rival. Near 52-wk low. DKK 3.8B buyback through May 4. -40% YoY = deep value</div>
+    <div class="w-catalyst">ð Buyback ends May 4</div>
+    <div class="w-footer"><span class="w-entry">Entry: DKK 250</span><span class="w-price">Now: DKK 257.80</span></div>
+  </div>
+
+  <div class="w-card">
+    <div class="w-header">
+      <div><span class="w-name">Rheinmetall AG</span><span class="w-ticker">RHM</span></div>
+      <span class="w-signal signal-buy">BUY</span>
+    </div>
+    <div class="w-reason">15/15 Buy. Target EUR 2,044 (+37%). NATO $237M ammo deal. Ex-div May 13</div>
+    <div class="w-catalyst">ð Ex-div May 13</div>
+    <div class="w-footer"><span class="w-entry">Entry: EUR 1,450</span><span class="w-price">Now: EUR 1,495</span></div>
+  </div>
+
+  <div class="w-card">
+    <div class="w-header">
+      <div><span class="w-name">ASML Holding</span><span class="w-ticker">ASML</span></div>
+      <span class="w-signal signal-buy">BUY</span>
+    </div>
+    <div class="w-reason">Q1 beat. Raised guidance EUR 36-40B. 66% EUV share. China risk = dip opportunity</div>
+    <div class="w-catalyst">ð China restrictions clarity</div>
+    <div class="w-footer"><span class="w-entry">Entry: $1,300</span><span class="w-price">Now: $1,317</span></div>
+  </div>
+
+  <div class="w-card">
+    <div class="w-header">
+      <div><span class="w-name">Nuvalent</span><span class="w-ticker">NUVL</span></div>
+      <span class="w-signal signal-buy">BUY</span>
+    </div>
+    <div class="w-reason">PDUFA Sept 18 confirmed. AACR 2026: 67% ORR. $1.4B cash to 2029</div>
+    <div class="w-catalyst">ð PDUFA Sept 18 â 5 months</div>
+    <div class="w-footer"><span class="w-entry">Entry: $95</span><span class="w-price">Now: $104.50</span></div>
+  </div>
+
+  <div class="w-card">
+    <div class="w-header">
+      <div><span class="w-name">Travere Therapeutics</span><span class="w-ticker">TVTX</span></div>
+      <span class="w-signal signal-buy">BUY</span>
+    </div>
+    <div class="w-reason">FILSPARI full FDA approval for FSGS. Stock +37%. $3B US opportunity</div>
+    <div class="w-catalyst">ð Commercial ramp FSGS + IgAN</div>
+    <div class="w-footer"><span class="w-entry">Entry: $38</span><span class="w-price">Now: $39.54</span></div>
+  </div>
+
+  <div class="w-card">
+    <div class="w-header">
+      <div><span class="w-name">Viking Therapeutics</span><span class="w-ticker">VKTX</span></div>
+      <span class="w-signal signal-buy">BUY</span>
+    </div>
+    <div class="w-reason">VANQUISH-2 enrolled. Oral Phase 3 Q3 2026. 9 Buy. Target $99</div>
+    <div class="w-catalyst">ð Oral Phase 3 initiation Q3 2026</div>
+    <div class="w-footer"><span class="w-entry">Entry: $30</span><span class="w-price">Now: $35.24</span></div>
+  </div>
+
+  <div class="w-card">
+    <div class="w-header">
+      <div><span class="w-name">Kratos Defense</span><span class="w-ticker">KTOS</span><span class="new-tag">â NEW</span></div>
+      <span class="w-signal signal-watch">WATCH</span>
+    </div>
+    <div class="w-reason">Marine Corps Valkyrie drone ($231M). Pentagon Drone Dominance. $1.5T DoD budget</div>
+    <div class="w-catalyst">ð Drone deliveries 2026</div>
+    <div class="w-footer"><span class="w-entry">Entry: $65</span><span class="w-price">Now: $71.38</span></div>
+  </div>
+
+  <div class="w-card">
+    <div class="w-header">
+      <div><span class="w-name">Hims & Hers</span><span class="w-ticker">HIMS</span></div>
+      <span class="w-signal signal-watch">WATCH</span>
+    </div>
+    <div class="w-reason">FDA peptide review â 12 peptides may leave Cat 2. Owns mfg facility</div>
+    <div class="w-catalyst">ð FDA Panel July 23-24</div>
+    <div class="w-footer"><span class="w-entry">Entry: $24</span><span class="w-price">Now: $28.97</span></div>
+  </div>
+
+  <div class="w-card">
+    <div class="w-header">
+      <div><span class="w-name">MindMed</span><span class="w-ticker">MNMD</span></div>
+      <span class="w-signal signal-watch">WATCH</span>
+    </div>
+    <div class="w-reason">Phase 3 Emerge data accelerated to mid-2026. PT $24.50-$61</div>
+    <div class="w-catalyst">ð Phase 3 data mid-2026 (weeks away)</div>
+    <div class="w-footer"><span class="w-entry">Entry: $18</span><span class="w-price">Now: $20.43</span></div>
+  </div>
+
+  <div class="w-card">
+    <div class="w-header">
+      <div><span class="w-name">Palantir</span><span class="w-ticker">PLTR</span></div>
+      <span class="w-signal signal-watch">WATCH</span>
+    </div>
+    <div class="w-reason">$10B Army contract. FAA AI tool ($32B program). Rev guidance $7.2B (+61%)</div>
+    <div class="w-catalyst">ð Q1 2026 earnings</div>
+    <div class="w-footer"><span class="w-entry">Entry: $130</span><span class="w-price">Now: $146</span></div>
+  </div>
+
+  <div class="w-card">
+    <div class="w-header">
+      <div><span class="w-name">Exxon Mobil</span><span class="w-ticker">XOM</span></div>
+      <span class="w-signal signal-watch">WATCH</span>
+    </div>
+    <div class="w-reason">Oil $112/bbl on Iran conflict. Near ATH. Geopolitical tailwind</div>
+    <div class="w-catalyst">ð Q1 earnings</div>
+    <div class="w-footer"><span class="w-entry">Entry: $140</span><span class="w-price">Now: $146.32</span></div>
+  </div>
+</div>
+
+<!-- TAB BAR -->
+<div class="tabs">
+  <button class="tab active" data-page="holdings"><span class="tab-icon">ð¼</span>Holdings</button>
+  <button class="tab" data-page="charts"><span class="tab-icon">ð</span>Charts</button>
+  <button class="tab" data-page="alerts"><span class="tab-icon">ð</span>Alerts</button>
+  <button class="tab" data-page="watchlist"><span class="tab-icon">ð­</span>Watch</button>
+</div>
+
+<script>
+// Tab navigation
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('page-' + tab.dataset.page).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+});
+
+// Charts
+const C = Chart;
+C.defaults.color = '#5a6080';
+C.defaults.font.family = "'DM Mono', monospace";
+C.defaults.font.size = 10;
+
+new C(document.getElementById('timeChart'), {
+  type: 'line',
+  data: {
+    labels: ['Apr 17 AM', 'Apr 17 PM', 'Apr 20'],
+    datasets: [{
+      data: [306412, 307069, 318498],
+      borderColor: '#60cfff',
+      backgroundColor: 'rgba(96,207,255,0.08)',
+      fill: true, tension: 0.3, pointRadius: 5,
+      pointBackgroundColor: '#60cfff',
+      pointBorderColor: '#0f1320', pointBorderWidth: 2
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { grid: { color: '#1c2236' } },
+      y: { grid: { color: '#1c2236' }, ticks: { callback: v => (v/1000).toFixed(0) + 'K' } }
+    }
+  }
+});
+
+new C(document.getElementById('distChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Funds 40.7%', 'Stocks 31.4%', 'Crypto 16.2%', 'Gold 9.1%', 'Cash 2.6%'],
+    datasets: [{
+      data: [40.72, 31.42, 16.17, 9.07, 2.62],
+      backgroundColor: ['#a78bfa', '#60cfff', '#f59e0b', '#ffd700', '#5a6080'],
+      borderWidth: 0, hoverOffset: 6
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false, cutout: '62%',
+    plugins: {
+      legend: { position: 'bottom', labels: { padding: 14, usePointStyle: true, pointStyle: 'circle', font: { size: 10 } } }
+    }
+  }
+});
+
+new C(document.getElementById('perfChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Ascendis', 'Ionis', 'Finserve', 'Eli Lilly', 'NVIDIA', 'Avanza Tech', 'BTC', 'SEB AI', 'Avanza Glbl', 'Gold', 'RVMD', 'Rolls-Royce'],
+    datasets: [{
+      data: [22.0, 18.0, 12.8, 9.6, 7.4, 6.1, 4.4, 3.4, 1.3, 1.2, -0.2, -4.1],
+      backgroundColor: ['#00ff9f','#00ff9f','#00ff9f','#00ff9f','#00ff9f','#00ff9f','#00ff9f','#00ff9f','#00ff9f','#00ff9f','#ff4d6d','#ff4d6d'],
+      borderWidth: 0, borderRadius: 4
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false, indexAxis: 'y',
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { grid: { color: '#1c2236' }, ticks: { callback: v => v + '%' } },
+      y: { grid: { display: false } }
+    }
+  }
+});
+
+new C(document.getElementById('divChart'), {
+  type: 'bar',
+  data: {
+    labels: ['2020','2021','2022','2023','2024','2025','2026'],
+    datasets: [{
+      data: [112, 374, 2330, 2096, 2014, 143, 47],
+      backgroundColor: '#a78bfa', borderWidth: 0, borderRadius: 6
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: { x: { grid: { display: false } }, y: { grid: { color: '#1c2236' } } }
+  }
+});
+</script>
+</body>
+</html>
